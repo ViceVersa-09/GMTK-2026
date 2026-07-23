@@ -24,12 +24,14 @@ public class TurnManager : MonoBehaviour
     ComboManager comboManager;
     InputAction dodgeAction;
     InputAction blockAction;
+    ButtonMethods[] buttonMethods;
 
     private void Start()
     {
         comboManager = FindFirstObjectByType<ComboManager>();
         dodgeAction = InputSystem.actions.FindAction("Dodge");
         blockAction = InputSystem.actions.FindAction("Block");
+        buttonMethods = FindObjectsByType<ButtonMethods>(FindObjectsSortMode.None);
 
         currentTurn = Turn.Player;
         previousTurn = currentTurn;
@@ -38,6 +40,7 @@ public class TurnManager : MonoBehaviour
     private void Update()
     {
         SolveTurn();
+        RemoveButtons();
         Debug.Log(currentTurn);
     }
 
@@ -96,20 +99,69 @@ public class TurnManager : MonoBehaviour
         {
             StopAllCoroutines();
             quickTimeEvent = false;
-            currentTurn = Turn.Player;
+            nextTurn = Turn.Player;
+            UIManager uIManager = FindFirstObjectByType<UIManager>();
+            StartCoroutine(uIManager.Timer(0));
         }
         else if (blockAction.WasPressedThisFrame())
         {
             StopAllCoroutines();
             quickTimeEvent = false;
-            currentTurn = Turn.Inbetween;
+            nextTurn = Turn.Inbetween;
+            UIManager uIManager = FindFirstObjectByType<UIManager>();
+            StartCoroutine(uIManager.Timer(0));
+        }
+        else
+        {
+            ButtonMethods[] buttonMethods = FindObjectsByType<ButtonMethods>(FindObjectsSortMode.None);
+            float damage = 0;
+
+            foreach (var attack in buttonMethods)
+            {
+                if (comboManager.currentAttack == attack.attack)
+                {
+                    damage = attack.attackDamage;
+                    break;
+                }
+            }
+
+            PlayerController playerController = FindFirstObjectByType<PlayerController>();
+            playerController.health -= damage;
         }
     }
 
     IEnumerator Timer(float time)
     {
         quickTimeEvent = true;
+        UIManager uIManager = FindFirstObjectByType<UIManager>();
+        StartCoroutine(uIManager.Timer(Mathf.CeilToInt(time)));
         yield return new WaitForSeconds(time);
         quickTimeEvent = false;
+    }
+
+    public void UpdateQuickTime()
+    {
+        OpponentController opponentController = FindFirstObjectByType<OpponentController>();
+
+        // hard coded, please change or something
+        quickTime = opponentController.health / 20;
+    }
+
+    void RemoveButtons()
+    {
+        if (currentTurn == Turn.Player)
+        {
+            foreach (var button in buttonMethods)
+            {
+                button.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            foreach (var button in buttonMethods)
+            {
+                button.gameObject.SetActive(false);
+            }
+        }
     }
 }

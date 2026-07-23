@@ -3,8 +3,8 @@ using UnityEngine;
 public class ButtonMethods : MonoBehaviour
 {
     [Header("Attack button")]
-    [SerializeField] ComboManager.AttackStates attack;
-    [SerializeField] float attackDamage;
+    [SerializeField] public ComboManager.AttackStates attack;
+    [SerializeField] public float attackDamage;
 
     public void ExampleMethod()
     {
@@ -20,5 +20,6 @@ public class ButtonMethods : MonoBehaviour
         opponent.health -= attackDamage;
         comboManager.currentAttack = attack;
         turnManager.currentTurn = TurnManager.Turn.Inbetween;
+        turnManager.UpdateQuickTime();
     }
 }
