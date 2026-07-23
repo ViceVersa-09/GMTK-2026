@@ -32,12 +32,13 @@ public class TurnManager : MonoBehaviour
         blockAction = InputSystem.actions.FindAction("Block");
 
         currentTurn = Turn.Player;
+        previousTurn = currentTurn;
     }
 
     private void Update()
     {
         SolveTurn();
-        Debug.Log(quickTimeEvent);
+        Debug.Log(currentTurn);
     }
 
     void SolveTurn()
@@ -89,8 +90,7 @@ public class TurnManager : MonoBehaviour
     {
         StartCoroutine(Timer(quickTime));
 
-        yield return new WaitUntil(() => !quickTimeEvent || dodgeAction.WasPressedThisFrame() || 
-            blockAction.WasPressedThisFrame());
+        yield return new WaitUntil(() => !quickTimeEvent || dodgeAction.WasPressedThisFrame() || blockAction.WasPressedThisFrame());
 
         if (dodgeAction.WasPressedThisFrame())
         {
@@ -102,7 +102,7 @@ public class TurnManager : MonoBehaviour
         {
             StopAllCoroutines();
             quickTimeEvent = false;
-            currentTurn = Turn.Opponent;
+            currentTurn = Turn.Inbetween;
         }
     }
 

@@ -24,6 +24,11 @@ public class ComboManager : MonoBehaviour
     [HideInInspector] public AttackStates currentAttack;
     [HideInInspector] public bool dodgedOrBlocked;
 
+    private void Start()
+    {
+        goodNextAttack = (AttackStates[])Enum.GetValues(typeof(AttackStates));
+    }
+
     public void AssignGood()
     {
         if (currentAttack == AttackStates.rightUppercut)

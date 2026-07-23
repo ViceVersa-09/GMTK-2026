@@ -28,7 +28,7 @@ public class OpponentController : MonoBehaviour
     IEnumerator ChooseAttack()
     {
         // if youre wondering why quicktimevent is not true immediately its because its called at the bottom here,
-        // its not a bug, its a feature
+        // its not a bug, its a feature... it may need fixing though
         yield return new WaitForSeconds(attackDelay);
 
         ComboManager comboManager = FindFirstObjectByType<ComboManager>();
