@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class AttackManager : MonoBehaviour
+public class ComboManager : MonoBehaviour
 {
     public enum AttackStates
     {
@@ -20,9 +20,11 @@ public class AttackManager : MonoBehaviour
     [SerializeField] AttackStates[] leftJabGood;
     [SerializeField] AttackStates[] leftHookGood;
 
-    AttackStates[] goodNextAttack;
+    [HideInInspector] public AttackStates[] goodNextAttack;
+    [HideInInspector] public AttackStates currentAttack;
+    [HideInInspector] public bool dodgedOrBlocked;
 
-    void AssignGood(AttackStates currentAttack)
+    public void AssignGood()
     {
         if (currentAttack == AttackStates.rightUppercut)
         {
