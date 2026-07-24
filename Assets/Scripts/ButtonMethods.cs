@@ -3,7 +3,8 @@ using UnityEngine;
 public class ButtonMethods : MonoBehaviour
 {
     [Header("Attack button")]
-    [SerializeField] public ComboManager.AttackStates attack;
+    // if your doing the roguelite, dont increase this stat. that will make the enemy do more as well, increase in playerattack method
+    [SerializeField] public ComboManager.AttackStates attack; 
     [SerializeField] public float attackDamage;
 
     public void ExampleMethod()

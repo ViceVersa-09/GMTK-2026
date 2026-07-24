@@ -22,6 +22,7 @@ public class ComboManager : MonoBehaviour
 
     [HideInInspector] public AttackStates[] goodNextAttack;
     [HideInInspector] public AttackStates currentAttack;
+    [HideInInspector] public int hits;
 
     private void Start()
     {

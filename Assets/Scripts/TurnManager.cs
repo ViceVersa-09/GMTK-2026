@@ -56,11 +56,13 @@ public class TurnManager : MonoBehaviour
             {
                 if (comboManager.goodNextAttack.Contains(comboManager.currentAttack))
                 {
+                    comboManager.hits++;
                     nextTurn = Turn.Player;
                     comboManager.AssignGood();
                 }
                 else
                 {
+                    comboManager.hits = 0;
                     nextTurn = Turn.Opponent;
                     comboManager.goodNextAttack = (ComboManager.AttackStates[])Enum.GetValues
                         (typeof(ComboManager.AttackStates));
@@ -70,11 +72,13 @@ public class TurnManager : MonoBehaviour
             {
                 if (comboManager.goodNextAttack.Contains(comboManager.currentAttack))
                 {
+                    comboManager.hits++;
                     nextTurn = Turn.Opponent;
                     comboManager.AssignGood();
                 }
                 else
                 {
+                    comboManager.hits = 0;
                     nextTurn = Turn.Player;
                     comboManager.goodNextAttack = (ComboManager.AttackStates[])Enum.GetValues
                         (typeof(ComboManager.AttackStates));
@@ -97,6 +101,7 @@ public class TurnManager : MonoBehaviour
         if (dodgeAction.WasPressedThisFrame())
         {
             StopAllCoroutines();
+            comboManager.hits = 0;
             quickTimeEvent = false;
             nextTurn = Turn.Player;
             UIManager uIManager = FindFirstObjectByType<UIManager>();
@@ -105,6 +110,7 @@ public class TurnManager : MonoBehaviour
         else if (blockAction.WasPressedThisFrame())
         {
             StopAllCoroutines();
+            comboManager.hits = 0;
             quickTimeEvent = false;
             nextTurn = Turn.Inbetween;
             UIManager uIManager = FindFirstObjectByType<UIManager>();
