@@ -22,7 +22,6 @@ public class ComboManager : MonoBehaviour
 
     [HideInInspector] public AttackStates[] goodNextAttack;
     [HideInInspector] public AttackStates currentAttack;
-    [HideInInspector] public bool dodgedOrBlocked;
 
     private void Start()
     {
@@ -57,7 +56,12 @@ public class ComboManager : MonoBehaviour
         }
         else
         {
-            goodNextAttack = Array.Empty<AttackStates>();
+            goodNextAttack = (AttackStates[])Enum.GetValues(typeof(AttackStates));
+        }
+
+        foreach (var attack in goodNextAttack)
+        {
+            Debug.Log(attack);
         }
     }
 }

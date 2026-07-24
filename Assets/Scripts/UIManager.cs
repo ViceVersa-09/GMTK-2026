@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,11 +20,13 @@ public class UIManager : MonoBehaviour
 
     PlayerController playerController;
     OpponentController opponentController;
+    TurnManager turnManager;
 
     private void Start()
     {
         playerController = FindFirstObjectByType<PlayerController>();
         opponentController = FindFirstObjectByType<OpponentController>();
+        turnManager = FindFirstObjectByType<TurnManager>();
 
         playerSlider.maxValue = playerController.maxHealth;
         playerSlider.value = playerSlider.maxValue;
@@ -36,33 +39,44 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         UpdateHealthbars();
+        TimerOnOff();
     }
 
     void UpdateHealthbars()
     {
-        playerText.text = "Your health: " + playerController.health + "/" + playerController.maxHealth;
+        playerText.text = "Your health: " + Mathf.Clamp(playerController.health, 0, playerController.maxHealth) + 
+            "/" + playerController.maxHealth;
         playerSlider.value = playerController.health;
 
-        opponentText.text = "Your health: " + opponentController.health + "/" + opponentController.maxHealth;
+        opponentText.text = "Your health: " + Mathf.Clamp(opponentController.health, 0, opponentController.maxHealth) + 
+            "/" + opponentController.maxHealth;
         opponentSlider.value = opponentController.health;
     }
 
-    public IEnumerator Timer(int seconds)
+    public IEnumerator Timer(float seconds)
     {
-        timerText.gameObject.SetActive(true);
-        timerSlider.gameObject.SetActive(true);
-
         timerSlider.maxValue = seconds;
         timerSlider.value = seconds;
 
-        for (int i = seconds; i > 0; i--)
+        for (float i = seconds; i > 0; i -= Time.deltaTime)
         {
             timerSlider.value = i;
-            timerText.text = i.ToString();
-            yield return new WaitForSeconds(1);
+            timerText.text = Mathf.CeilToInt(i).ToString();
+            yield return new WaitForEndOfFrame();
         }
+    }
 
-        timerText.gameObject.SetActive(false);
-        timerSlider.gameObject.SetActive(false);
+    void TimerOnOff()
+    {
+        if (turnManager.quickTimeEvent)
+        {
+            timerText.gameObject.SetActive(true);
+            timerSlider.gameObject.SetActive(true);
+        }
+        else
+        {
+            timerText.gameObject.SetActive(false);
+            timerSlider.gameObject.SetActive(false);
+        }
     }
 }

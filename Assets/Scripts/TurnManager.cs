@@ -40,8 +40,7 @@ public class TurnManager : MonoBehaviour
     private void Update()
     {
         SolveTurn();
-        RemoveButtons();
-        Debug.Log(currentTurn);
+        StartCoroutine(RemoveButtons());
     }
 
     void SolveTurn()
@@ -51,7 +50,7 @@ public class TurnManager : MonoBehaviour
             previousTurn = currentTurn;
         }
 
-        if (currentTurn == Turn.Inbetween)
+        if (currentTurn == Turn.Inbetween && !quickTimeEvent)
         {
             if (previousTurn == Turn.Player)
             {
@@ -125,6 +124,8 @@ public class TurnManager : MonoBehaviour
                 }
             }
 
+            nextTurn = Turn.Inbetween;
+
             PlayerController playerController = FindFirstObjectByType<PlayerController>();
             playerController.health -= damage;
         }
@@ -134,7 +135,7 @@ public class TurnManager : MonoBehaviour
     {
         quickTimeEvent = true;
         UIManager uIManager = FindFirstObjectByType<UIManager>();
-        StartCoroutine(uIManager.Timer(Mathf.CeilToInt(time)));
+        StartCoroutine(uIManager.Timer(time));
         yield return new WaitForSeconds(time);
         quickTimeEvent = false;
     }
@@ -147,13 +148,18 @@ public class TurnManager : MonoBehaviour
         quickTime = opponentController.health / 20;
     }
 
-    void RemoveButtons()
+    IEnumerator RemoveButtons()
     {
         if (currentTurn == Turn.Player)
         {
-            foreach (var button in buttonMethods)
+            yield return new WaitForEndOfFrame();
+            
+            if (currentTurn == Turn.Player)
             {
-                button.gameObject.SetActive(true);
+                foreach (var button in buttonMethods)
+                {
+                    button.gameObject.SetActive(true);
+                }
             }
         }
         else
